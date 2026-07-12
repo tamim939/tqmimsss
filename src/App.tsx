@@ -97,7 +97,7 @@ export default function App() {
       
       // 2. Client-side fallback for Telegram (specifically for Vercel/Static hosting)
       const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || "8624730650:AAGezhEM3IVKD5xGg-m5JnQ0FZfmtn7upR0";
-      const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+      const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID || "7228630025";
 
       if (BOT_TOKEN && CHAT_ID) {
         try {

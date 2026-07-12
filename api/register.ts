@@ -20,7 +20,7 @@ export default async function handler(
   } = request.body;
 
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN || "8624730650:AAGezhEM3IVKD5xGg-m5JnQ0FZfmtn7upR0";
-  const CHAT_ID = process.env.TELEGRAM_CHAT_ID || process.env.VITE_TELEGRAM_CHAT_ID;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID || process.env.VITE_TELEGRAM_CHAT_ID || "7228630025";
 
   if (!BOT_TOKEN || !CHAT_ID) {
     return response.status(200).json({ success: true, warning: 'Telegram not configured' });
