@@ -13,6 +13,7 @@ export interface RegistrationFormData {
   guestCount: string;
   photo?: File | null;
   transactionId: string;
+  paymentMethod: string;
 }
 
 export const T_SHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];

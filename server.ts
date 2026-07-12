@@ -24,7 +24,7 @@ async function startServer() {
 
   // API Route for Telegram Notification
   app.post('/api/register', upload.single('photo'), async (req, res) => {
-    const { sscBatch, fullName, villageName, phoneNumber, occupation, tShirtSize, guestCount, transactionId } = req.body;
+    const { sscBatch, fullName, villageName, phoneNumber, occupation, tShirtSize, guestCount, transactionId, paymentMethod } = req.body;
     const photo = req.file;
 
     const message = `
@@ -37,6 +37,7 @@ async function startServer() {
 💼 *Occupation:* ${occupation || 'N/A'}
 👕 *T-Shirt:* ${tShirtSize}
 👥 *Guests:* ${guestCount}
+💳 *Method:* ${paymentMethod || 'N/A'}
 💰 *TxID:* \`${transactionId}\`
 ━━━━━━━━━━━━━━━━━━
 `;
