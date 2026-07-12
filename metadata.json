@@ -1,0 +1,6 @@
+{
+  "name": "Wadudur Rahman HS Reunion 2026",
+  "description": "Official registration portal for the Wadudur Rahman High School Reunion 2026. Features Bengali interface, form validation, and instant Telegram notifications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
