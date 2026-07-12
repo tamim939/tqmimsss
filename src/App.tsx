@@ -72,6 +72,9 @@ export default function App() {
           data.append(key, value.toString());
         }
       });
+
+      const totalInfo = calculateTotal();
+      data.append('totalFee', totalInfo.text);
       
       // Append photo if exists
       if (formData.photo instanceof File) {
@@ -101,6 +104,7 @@ export default function App() {
 
       if (BOT_TOKEN && CHAT_ID) {
         try {
+          const totalInfo = calculateTotal();
           const message = `
 🔔 *New Reunion Registration!*
 ━━━━━━━━━━━━━━━━━━
@@ -111,21 +115,35 @@ export default function App() {
 💼 *Occupation:* ${formData.occupation || 'N/A'}
 👕 *T-Shirt:* ${formData.tShirtSize}
 👥 *Guests:* ${formData.guestCount}
+💰 *Total Fee:* ${totalInfo.text}
 💳 *Method:* ${formData.paymentMethod || 'N/A'}
-💰 *TxID:* \`${formData.transactionId}\`
+🎫 *TxID:* \`${formData.transactionId}\`
 ━━━━━━━━━━━━━━━━━━
 (Sent via client-side fallback)
 `;
 
-          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: CHAT_ID,
-              text: message,
-              parse_mode: 'Markdown',
-            }),
-          });
+          if (formData.photo instanceof File) {
+            const photoData = new FormData();
+            photoData.append('chat_id', CHAT_ID);
+            photoData.append('photo', formData.photo);
+            photoData.append('caption', message);
+            photoData.append('parse_mode', 'Markdown');
+
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+              method: 'POST',
+              body: photoData,
+            });
+          } else {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown',
+              }),
+            });
+          }
         } catch (fallbackError) {
           console.error('Fallback failed:', fallbackError);
         }

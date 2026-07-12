@@ -16,7 +16,7 @@ export default async function handler(
   const { 
     sscBatch, fullName, villageName, phoneNumber, 
     occupation, tShirtSize, guestCount, 
-    transactionId, paymentMethod 
+    transactionId, paymentMethod, totalFee
   } = request.body;
 
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN || "8624730650:AAGezhEM3IVKD5xGg-m5JnQ0FZfmtn7upR0";
@@ -36,8 +36,9 @@ export default async function handler(
 💼 *Occupation:* ${occupation || 'N/A'}
 👕 *T-Shirt:* ${tShirtSize}
 👥 *Guests:* ${guestCount}
+💰 *Total Fee:* ${totalFee || 'N/A'}
 💳 *Method:* ${paymentMethod || 'N/A'}
-💰 *TxID:* \`${transactionId}\`
+🎫 *TxID:* \`${transactionId}\`
 ━━━━━━━━━━━━━━━━━━
 (Sent via Vercel Function)
 `;
