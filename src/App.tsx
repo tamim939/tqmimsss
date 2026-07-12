@@ -122,19 +122,21 @@ export default function App() {
 (Sent via client-side fallback)
 `;
 
-          if (formData.photo instanceof File) {
+          const hasPhoto = formData.photo && (formData.photo instanceof File || (typeof formData.photo === 'object' && 'name' in formData.photo));
+          if (hasPhoto) {
             const photoData = new FormData();
             photoData.append('chat_id', CHAT_ID);
-            photoData.append('photo', formData.photo);
+            photoData.append('photo', formData.photo as File);
             photoData.append('caption', message);
             photoData.append('parse_mode', 'Markdown');
 
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
               method: 'POST',
               body: photoData,
             });
+            if (!res.ok) throw new Error('sendPhoto failed');
           } else {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -143,6 +145,7 @@ export default function App() {
                 parse_mode: 'Markdown',
               }),
             });
+            if (!res.ok) throw new Error('sendMessage failed');
           }
         } catch (fallbackError) {
           console.error('Fallback failed:', fallbackError);
