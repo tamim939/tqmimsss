@@ -45,9 +45,14 @@ async function startServer() {
     const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-    if (!BOT_TOKEN || !CHAT_ID) {
-      console.error('Telegram credentials missing');
-      return res.json({ success: true, warning: 'Telegram not configured' });
+    // Check if credentials are placeholders or missing
+    if (!BOT_TOKEN || !CHAT_ID || CHAT_ID === 'YOUR_CHAT_ID' || BOT_TOKEN === 'YOUR_BOT_TOKEN') {
+      console.warn('Telegram credentials missing or not configured. Data received:', req.body);
+      // Return success so the user can see the success state in the UI
+      return res.json({ 
+        success: true, 
+        warning: 'Telegram not configured. Please set TELEGRAM_CHAT_ID in your environment.' 
+      });
     }
 
     try {
