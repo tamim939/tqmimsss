@@ -87,79 +87,17 @@ export default function App() {
         body: data,
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({ success: false, error: 'Server error' }));
 
       if (result.success) {
         setIsSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        throw new Error(result.error || 'API failed');
+        throw new Error(result.error || 'Registration failed');
       }
-    } catch (error) {
-      console.warn('Backend API failed, trying client-side fallback...', error);
-      
-      // 2. Client-side fallback for Telegram (specifically for Vercel/Static hosting)
-      const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || "8624730650:AAGezhEM3IVKD5xGg-m5JnQ0FZfmtn7upR0";
-      const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID || "7228630025";
-
-      if (BOT_TOKEN && CHAT_ID) {
-        try {
-          const totalInfo = calculateTotal();
-          const message = `
-🔔 *New Reunion Registration!*
-━━━━━━━━━━━━━━━━━━
-🎓 *SSC Batch:* ${formData.sscBatch}
-👤 *Full Name:* ${formData.fullName}
-🏡 *Village:* ${formData.villageName}
-📞 *Phone:* ${formData.phoneNumber}
-💼 *Occupation:* ${formData.occupation || 'N/A'}
-👕 *T-Shirt:* ${formData.tShirtSize}
-👥 *Guests:* ${formData.guestCount}
-💰 *Total Fee:* ${totalInfo.text}
-💳 *Method:* ${formData.paymentMethod || 'N/A'}
-🎫 *TxID:* \`${formData.transactionId}\`
-━━━━━━━━━━━━━━━━━━
-(Sent via client-side fallback)
-`;
-
-          const hasPhoto = formData.photo instanceof File;
-          
-          if (hasPhoto) {
-            const photoData = new FormData();
-            photoData.append('chat_id', CHAT_ID);
-            photoData.append('photo', formData.photo as File);
-            photoData.append('caption', message);
-            photoData.append('parse_mode', 'Markdown');
-
-            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-              method: 'POST',
-              body: photoData,
-            });
-            if (!res.ok) {
-              const err = await res.text();
-              console.error('sendPhoto failed:', err);
-              throw new Error('sendPhoto failed');
-            }
-          } else {
-            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown',
-              }),
-            });
-            if (!res.ok) throw new Error('sendMessage failed');
-          }
-        } catch (fallbackError) {
-          console.error('Fallback failed:', fallbackError);
-        }
-      }
-
-      // ALWAYS show success if we reach here, as per user requirement "সাকসেসফুল আসবে"
-      setIsSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error: any) {
+      console.error('Submission failed:', error);
+      alert('Registration failed: ' + error.message);
     }
   };
 
