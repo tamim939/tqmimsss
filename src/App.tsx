@@ -96,7 +96,7 @@ export default function App() {
       console.warn('Backend API failed, trying client-side fallback...', error);
       
       // 2. Client-side fallback for Telegram (specifically for Vercel/Static hosting)
-      const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+      const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || "8624730650:AAGezhEM3IVKD5xGg-m5JnQ0FZfmtn7upR0";
       const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 
       if (BOT_TOKEN && CHAT_ID) {
@@ -117,8 +117,6 @@ export default function App() {
 (Sent via client-side fallback)
 `;
 
-          // Note: Sending photo from client-side via Telegram API is complex due to multipart/form-data
-          // We'll at least send the text data
           await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
