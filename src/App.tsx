@@ -38,6 +38,7 @@ export default function App() {
     guestCount: '',
     transactionId: '',
     paymentMethod: '',
+    photo: null,
   });
 
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -64,14 +65,16 @@ export default function App() {
     
     try {
       const data = new FormData();
-      (Object.keys(formData) as Array<keyof RegistrationFormData>).forEach((key) => {
-        const value = formData[key];
-        if (value && key !== 'photo') {
-          data.append(key, value as string);
+      
+      // Append all text fields
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key !== 'photo' && value !== null && value !== undefined) {
+          data.append(key, value.toString());
         }
       });
       
-      if (formData.photo) {
+      // Append photo if exists
+      if (formData.photo instanceof File) {
         data.append('photo', formData.photo);
       }
 
@@ -80,15 +83,17 @@ export default function App() {
         body: data,
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (result.success) {
         setIsSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        alert('Something went wrong. Please try again.');
+        alert(result.error || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Submission error:', error);
-      alert('Failed to connect to the server.');
+      alert('Network error. Please check your connection and try again.');
     }
   };
 
@@ -429,6 +434,7 @@ export default function App() {
                     guestCount: '',
                     transactionId: '',
                     paymentMethod: '',
+                    photo: null,
                   });
                   setPhotoPreview(null);
                 }}
